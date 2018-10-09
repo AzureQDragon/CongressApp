@@ -1,11 +1,3 @@
-'''
-Copyright © 2017 Daniel Moon, Luke Moon, Michael Kricheldorf
-All Rights Reserved. This code may not be reproduced or reused in any manner whatsoever
-without the consent of the writer.
-'''
-
-
-
 import random
 import tkinter as tk
 
@@ -47,14 +39,26 @@ funFacts = []
 score = 0
 
 questionPool = [atomicNumbers, atomicMass, funFacts]
-currentQuestion = []
+currentQuestion = ""
 currentAnswer = []
+randomElement = 0
+userAnswer = ""
 
-# CONTINUE HERE FOR MOGULDORF
-'''
-def qGen():
+def qAGen():
+    # generates random "element", but actually the element's index, so (<atomicNumber> - 1)
+    randomElement = random.randrange(118)
+    # generates the actual element(the answer)
+    currentAnswer = atomicNumber[randomElement]
+    # generates the question using the randomElement index within one of the question pools
+    currentQuestion = random.choice(questionPool)[randomElement]
 
-'''
+def isCorrect():
+    # just checks if the user's answer is the same as the actual answer (currentAnswer =? userAnswer)
+    if userAnswer.lower() == currentAnswer.lower():
+        return True
+    elif userAnswer.lower() != currentAnswer.lower():
+        return False
+
 class Application(tk.Frame):
     def __init__(self, master = None):
         tk.Frame.__init__(self, master)
@@ -65,8 +69,8 @@ class Application(tk.Frame):
         top=self.winfo_toplevel()
         top.rowconfigure(0, weight=1)
         top.columnconfigure(0, weight=1)
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)   # HEY DAN! I don't know what all this tkinter nonsense means but make sure that the variable
+        self.columnconfigure(0, weight=1)  # you use for user input transfers to the variable named "userAnswer" in my functions
         self.quit = tk.Button(self, text='Quit', command=self.quit)
         self.quit.grid(row=0, column=0,
             sticky=tk.N+tk.S+tk.E+tk.W)
