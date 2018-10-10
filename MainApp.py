@@ -1,3 +1,11 @@
+'''
+Copyright © 2017 Daniel Moon, Luke Moon, Michael Kricheldorf
+All Rights Reserved. This code may not be reproduced or reused in any manner whatsoever
+without the consent of the writer.
+'''
+
+
+
 import random
 import tkinter as tk
 
