@@ -51,38 +51,60 @@ currentAnswer = []
 randomElement = 0
 userAnswer = ""
 
-def qAGen():
-    # generates random "element", but actually the element's index, so (<atomicNumber> - 1)
-    randomElement = random.randrange(118)
-    # generates the actual element(the answer)
-    currentAnswer = atomicNumber[randomElement]
-    # generates the question using the randomElement index within one of the question pools
-    currentQuestion = random.choice(questionPool)[randomElement]
 
-def isCorrect():
-    # just checks if the user's answer is the same as the actual answer (currentAnswer =? userAnswer)
-    if userAnswer.lower() == currentAnswer.lower():
-        return True
-    elif userAnswer.lower() != currentAnswer.lower():
-        return False
+
+
 
 class Application(tk.Frame):
-    def __init__(self, master = None):
+    def __init__(self, master):
         tk.Frame.__init__(self, master)
+        self.master =  master
         self.grid(sticky=tk.E)
         self.createWidgets()
         self.Correct = False
         #self.total_label_text = tk.Text()
         #self.total_label = tk.Label(master, textvariable=self.Correct)
         #self.label = tk.Label(master, text="Answer:")
-        user_input1 = tk.Entry(master)
-
-
+        vcmd = master.register(self.validate) # we have to wrap the command
+        self.user_input = tk.Entry(master, validate="key", validatecommand=(vcmd, '%P'))
+        self.userAnswer = ''
+        self.answer = tk.Button(self, text='Answer', command=self.checkAnswer)
+        self.answer.grid(row=2, column=1,
+        sticky=tk.E)
         #layout
         #self.label.grid(row=0, column=0, sticky=tk.W)
-        user_input1.grid(row=0, column=0)
-        user_input1.anchor()
-    #def start(self):
+        self.user_input.grid(row=0, column=0)
+        self.user_input.anchor()
+    def qAGen():
+        # generates random "element", but actually the element's index, so (<atomicNumber> - 1)
+        randomElement = random.randrange(118)
+        # generates the actual element(the answer)
+        currentAnswer = atomicNumber[randomElement]
+        # generates the question using the randomElement index within one of the question pools
+        currentQuestion = random.choice(questionPool)[randomElement]
+    def validate(self, new_input):
+        if not new_input: # the field is being cleared
+            self.userAnswer = ''
+            return True
+
+        try:
+            answer = str(new_input)
+            self.userAnswer = answer
+            print(self.userAnswer)
+            return True
+        except ValueError:
+            return False
+
+    def checkAnswer(self):
+        # just checks if the user's answer is the same as the actual answer (currentAnswer =? userAnswer)
+        if self.userAnswer.lower() == 'd':#self.currentAnswer:
+            print("true")
+            return True
+        else:# self.userAnswer.lower() !='md':# self.currentAnswer:
+            print("false")
+            return False
+
+
     def createWidgets(self):
 
         top=self.winfo_toplevel()
@@ -90,14 +112,12 @@ class Application(tk.Frame):
         top.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)   # HEY DAN! I don't know what all this tkinter nonsense means but make sure that the variable
         self.columnconfigure(0, weight=1)  # you use for user input transfers to the variable named "userAnswer" in my functions
-        #self.quit = tk.Button(self, text='Quit', command=self.quit)
-        #self.quit.grid(row=0, column=0,
-        #    sticky=tk.E)
+
         label = tk.Label(self,
             anchor="w",fg="white",bg="blue")
 
 #configures size of the window and initiates the running of the UI along with the title of the window
-app = Application()
+app = Application(root)
 app.master.geometry("600x600")
 app.master.title('Periodic_flash_cards')
 app.mainloop()
