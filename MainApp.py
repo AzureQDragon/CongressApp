@@ -26,7 +26,6 @@ elementNames = ["Hydrogen", "Helium", "Lithium", "Beryllium", "Boron", "Carbon",
             "Mendelevium", "Nobelium", "Lawrencium", "Rutherfordium", "Dubnium", "Seaborgium",
             "Bohrium", "Hassium", "Meitnerium", "Darmstadtium", "Roentgenium", "Copernicium",
             "Nihonium", "Flerovium", "Moscovium", "Livermorium", "Tennessine", "Organesson"]
-
 atomicNumber = []
 for i in range(1, 119):
     atomicNumber.append(i)
@@ -38,7 +37,7 @@ funFacts = []
 
 score = 0
 
-questionPool = [atomicNumbers, atomicMass, funFacts]
+questionPool = [atomicNumber, atomicMass, funFacts]
 currentQuestion = ""
 currentAnswer = []
 randomElement = 0
@@ -62,22 +61,36 @@ def isCorrect():
 class Application(tk.Frame):
     def __init__(self, master = None):
         tk.Frame.__init__(self, master)
-        self.grid(sticky=tk.N+tk.S+tk.E+tk.W)
+        self.grid(sticky=tk.E)
         self.createWidgets()
+        self.Correct = False
+        #self.total_label_text = tk.Text()
+        #self.total_label = tk.Label(master, textvariable=self.Correct)
+        #self.label = tk.Label(master, text="Answer:")
+        user_input1 = tk.Entry(master)
+
+
+        #layout
+        #self.label.grid(row=0, column=0, sticky=tk.W)
+        user_input1.grid(row=0, column=0)
+        user_input1.anchor()
     #def start(self):
     def createWidgets(self):
+
         top=self.winfo_toplevel()
         top.rowconfigure(0, weight=1)
         top.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)   # HEY DAN! I don't know what all this tkinter nonsense means but make sure that the variable
         self.columnconfigure(0, weight=1)  # you use for user input transfers to the variable named "userAnswer" in my functions
-        self.quit = tk.Button(self, text='Quit', command=self.quit)
-        self.quit.grid(row=0, column=0,
-            sticky=tk.N+tk.S+tk.E+tk.W)
+        #self.quit = tk.Button(self, text='Quit', command=self.quit)
+        #self.quit.grid(row=0, column=0,
+        #    sticky=tk.E)
+        label = tk.Label(self,
+            anchor="w",fg="white",bg="blue")
 
 #configures size of the window and initiates the running of the UI along with the title of the window
 app = Application()
-app.geometry =  '400x400-0+20'
+app.master.geometry("600x600")
 app.master.title('Periodic_flash_cards')
 app.mainloop()
 
