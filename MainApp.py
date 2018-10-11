@@ -6,11 +6,6 @@ root = tk.Tk()
 #helv36 = tk.tkFont.Font(family='Helvetica',
 #        size=36, weight='bold')
 #parallel lists
-currentQuestion = ""
-currentAnswer = []
-randomElement = 0
-userAnswer = ""
-
 class Application(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
@@ -60,12 +55,12 @@ class Application(tk.Frame):
         self.currentAnswerint = 0
         self.score_label = tk.Label(master, text = 'Score: ' + str(self.score))
         self.answerbutton = tk.Button(self, text='Answer', command=self.checkAnswer, relief= 'solid')
-        self.answerbutton.grid(row=0, column=1,
-        sticky=tk.S)
+        self.answerbutton.grid(column=3, sticky=tk.W)
+        #sticky=tk.S)
         #layout
         self.label.grid(row=0, column=0, sticky=tk.W)
         self.user_input.grid(row=0, column=0)
-        self.score_label.grid(row=1, column=0, sticky=tk.N+tk.W)
+        self.score_label.grid(row=3, column=0, sticky=tk.W+tk.S)#, sticky=tk.S+tk.W)
         self.user_input.anchor()
         self.qAGen()
         self.label.configure(text= self.atomicNumber_quest)
@@ -81,6 +76,7 @@ class Application(tk.Frame):
         # generates the question using the randomElement index within one of the question pools
         self.currentAnswer = str(random.choice(self.questionPool)[randomElement])
 
+    #Validatest the user input and outputs true so that th %p can be validated.
     def validate(self, new_input):
         if not new_input: # the field is being cleared
             self.userAnswer = ''
@@ -100,6 +96,7 @@ class Application(tk.Frame):
         print(self.currentAnswerint)
         if self.userAnswer.lower() == self.currentAnswer.lower():
             print("true")
+            #generates next question and answer for element
             self.qAGen()
             self.quest_text.set(self.atomicNumber_quest)
             self.score += 1
@@ -113,12 +110,10 @@ class Application(tk.Frame):
     def createWidgets(self):
 
         top=self.winfo_toplevel()
-        top.rowconfigure(0, weight=1)
+        top.rowconfigure(0, weight=2)
         top.columnconfigure(0, weight=1)
-        self.rowconfigure(0, weight=1)   # HEY DAN! I don't know what all this tkinter nonsense means but make sure that the variable
-        self.columnconfigure(0, weight=1)  # you use for user input transfers to the variable named "userAnswer" in my functions
-        label = tk.Label(self,
-            anchor="w",fg="white",bg="blue")
+        #self.rowconfigure(0, weight=.5)   # HEY DAN! I don't know what all this tkinter nonsense means but make sure that the variable
+        #self.columnconfigure(0, weight=.5)  # you use for user input transfers to the variable named "userAnswer" in my functions
 
 #configures size of the window and initiates the running of the UI along with the title of the window
 app = Application(root)
