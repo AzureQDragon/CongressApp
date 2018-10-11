@@ -6,20 +6,10 @@ root = tk.Tk()
 #helv36 = tk.tkFont.Font(family='Helvetica',
 #        size=36, weight='bold')
 #parallel lists
-
-
-
-
-
-
 currentQuestion = ""
 currentAnswer = []
 randomElement = 0
 userAnswer = ""
-
-
-
-
 
 class Application(tk.Frame):
     def __init__(self, master):
@@ -32,6 +22,7 @@ class Application(tk.Frame):
         self.currentAnswer = ''
         self.funFacts = []
         self.score = 0
+
         self.elementNames = ["Hydrogen", "Helium", "Lithium", "Beryllium", "Boron", "Carbon",
                     "Nitrogen", "Oxygen", "Fluorine", "Neon", "Sodium", "Magnesium",
                     "Aluminium", "Silicon", "Phosphorus", "Sulfur", "Chlorine", "Argon",
@@ -52,32 +43,44 @@ class Application(tk.Frame):
                     "Bohrium", "Hassium", "Meitnerium", "Darmstadtium", "Roentgenium", "Copernicium",
                     "Nihonium", "Flerovium", "Moscovium", "Livermorium", "Tennessine", "Organesson"]
         self.atomicNumber = []
-        self.questionPool = [self.atomicNumber, self.atomicMass, self.funFacts]
+        self.questionPool = [self.atomicNumber] #self.atomicMass] #,self.funFacts]
+        self.Element = ""
         for i in range(1, 119):
             self.atomicNumber.append(i)
         self.Correct = False
+        self.atomicNumber_quest = 'thing'
         #self.total_label_text = tk.Text()
         #self.total_label = tk.Label(master, textvariable=self.Correct)
-        #self.label = tk.Label(master, text="Answer:")
+        self.quest_text = tk.StringVar()
+        self.label = tk.Label(master, text= self.atomicNumber_quest)
         vcmd = master.register(self.validate) # we have to wrap the command
         self.user_input = tk.Entry(master, validate="key", validatecommand=(vcmd, '%P'))
         self.userAnswer = ''
+        self.score = 0
         self.currentAnswerint = 0
-        self.answerbutton = tk.Button(self, text='Answer', command=self.checkAnswer)
-        self.answerbutton.grid(row=2, column=1,
-        sticky=tk.E)
+        self.score_label = tk.Label(master, text = 'Score: ' + str(self.score))
+        self.answerbutton = tk.Button(self, text='Answer', command=self.checkAnswer, relief= 'solid')
+        self.answerbutton.grid(row=0, column=1,
+        sticky=tk.S)
         #layout
-        #self.label.grid(row=0, column=0, sticky=tk.W)
+        self.label.grid(row=0, column=0, sticky=tk.W)
         self.user_input.grid(row=0, column=0)
+        self.score_label.grid(row=1, column=0, sticky=tk.N+tk.W)
         self.user_input.anchor()
-        
-    def qAGen():
+        self.qAGen()
+        self.label.configure(text= self.atomicNumber_quest)
+    def qAGen(self):
         # generates random "element", but actually the element's index, so (<atomicNumber> - 1)
-        randomElement = random.randrange(118)
+        randomElement = random.randrange(117)
+        self.Element = self.elementNames[randomElement]
+        self.atomicNumber_quest = self.Element + " has the atomic number of:"
+        self.quest_text.set(self.atomicNumber_quest)
+        self.label.configure(text = self.atomicNumber_quest)
         # generates the actual element(the answer)
         self.currentAnswerint = self.atomicNumber[randomElement]
         # generates the question using the randomElement index within one of the question pools
-        self.currentAnswer = random.choice(questionPool)[randomElement]
+        self.currentAnswer = str(random.choice(self.questionPool)[randomElement])
+
     def validate(self, new_input):
         if not new_input: # the field is being cleared
             self.userAnswer = ''
@@ -93,9 +96,14 @@ class Application(tk.Frame):
 
     def checkAnswer(self):
         # just checks if the user's answer is the same as the actual answer (currentAnswer =? userAnswer)\
+        print(self.Element)
         print(self.currentAnswerint)
-        if self.userAnswer.lower() == self.currentAnswer:
+        if self.userAnswer.lower() == self.currentAnswer.lower():
             print("true")
+            self.qAGen()
+            self.quest_text.set(self.atomicNumber_quest)
+            self.score += 1
+            self.score_label.configure(text='Score ' + str(self.score))
             return True
         else:# self.userAnswer.lower() !='md':# self.currentAnswer:
             print("false")
