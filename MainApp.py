@@ -54,6 +54,7 @@ class Application(tk.Frame):
                     "Mendelevium", "Nobelium", "Lawrencium", "Rutherfordium", "Dubnium", "Seaborgium",
                     "Bohrium", "Hassium", "Meitnerium", "Darmstadtium", "Roentgenium", "Copernicium",
                     "Nihonium", "Flerovium", "Moscovium", "Livermorium", "Tennessine", "Organesson"]
+        self.element_charge = ['']
 
         self.atomic_number = []
         for i in range(1, 119):
@@ -122,7 +123,7 @@ class Application(tk.Frame):
     #Validatest the user input and outputs true so that th %p can be validated.
     def outputAnswer(self):
         if self.displayed == False:
-            self.displayed = True 
+            self.displayed = True
             self.score -= 1
         self.score_label.configure(text='Score ' + str(self.score))
         self.element_label.configure(text=self.element+': '+ self.current_answer, bg='tomato')
@@ -173,7 +174,7 @@ root.configure(background = 'ghost white')
 #configures size of the window and initiates the running of the UI along with the title of the window
 app = Application(root)
 #app.master.geometry('700x300')
-app.master.title('PTL')
+app.master.title('PTM')
 app.mainloop()
 
 
