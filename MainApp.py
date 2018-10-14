@@ -58,14 +58,13 @@ class Application(tk.Frame):
         self.atomic_number = []
         for i in range(1, 119):
             self.atomic_number.append(i)
-
+        self.displayed = False
         self.score = 0
         self.display_element = tk.StringVar(master)
         self.display_element.set(self.element_names[0])
         self.current_answer = ''
         self.element = ''
-        self.correct = tk.StringVar()
-        self.question = ["The atomic number of this element is ", "The atomic mass of this element is ", "The atomic symbol of this element is "]
+        self.question = ["The atomic number of this element is: ", "The atomic mass of this element is: ", "The atomic symbol of this element is: "]
         self.atomic_number_question = self.question[0]
         self.atomic_mass_questions = self.question[1]
         self.atomic_symbol_questions = self.question [2]
@@ -74,27 +73,32 @@ class Application(tk.Frame):
         #self.total_label_text = tk.Text()
         #self.total_label = tk.Label(master, textvariable=self.correct)
         self.quest_text = tk.StringVar()
+        self.correct = ''
         vcmd = master.register(self.validate) # we have to wrap the command
         self.user_answer = ''
         self.score = 0
         self.current_answer_int = 0
 #--------------------------------------------Labels-----------------------------------------------
-        self.correct_label = tk.Label(master, text = self.correct)
+        self.correct_label = tk.Label(master, text = self.correct, bg = 'ghost white')
         self.element_label = tk.Label(master, text = self.display_element, bg = 'medium purple')
-        self.score_label = tk.Label(master, text = 'Score: ' + str(self.score))
-        self.label = tk.Label(master, text= self.atomic_number_question)
+        self.score_label = tk.Label(master, text = 'Score: ' + str(self.score), bg='PaleGreen1')
+        self.label = tk.Label(master, text= self.atomic_number_question, bg = 'ghost white')
 #-----------------------------------------Buttons & Entry-------------------------------------------
-        self.answer_button = tk.Button(self, text='Answer', command=self.checkAnswer, relief= 'flat', bg = "gray31")
+        self.answer_button = tk.Button(master, text='Answer', command=self.checkAnswer, relief= 'flat', bg = "gray38")
+        self.idk_button = tk.Button(master, text = 'Give up', command=self.outputAnswer, relief='flat', bg = "gray38")
         self.user_input = tk.Entry(master, validate="key", validatecommand=(vcmd, '%P'))
 #--------------------------------------------layout----------------------------------------------
         self.grid(sticky=tk.E)
-        self.element_label.grid(row=1, column =1)
-        self.label.grid(row=2, column=1, sticky=tk.W)
+        self.idk_button.grid(row=2, column=3, padx = 5)
+        self.element_label.grid(row=1, column =2, pady = 30)
+        self.element_label.configure(font=("Verdana", 30))
+        self.label.grid(row=2, column=0, sticky=tk.W)
         self.user_input.grid(row=2, column=2)
-        self.score_label.grid(row=4, column=4, sticky=tk.W+tk.S)#, sticky=tk.S+tk.W)
+        self.score_label.grid(row=0, column=0)#, sticky=tk.E+tk.N)#, sticky=tk.S+tk.W)
         self.user_input.anchor()
         self.label.configure(text= self.atomic_number_question)
-        self.answer_button.grid(row=3, column=2)
+        self.answer_button.grid(row=2, column=4)
+        self.correct_label.grid(row=1, column=0)
 #---------------------------------------------Setup------------------------------------------------
         self.qAGen()
 #---------------------------------------------Functions-------------------------------------------
@@ -107,7 +111,7 @@ class Application(tk.Frame):
         self.current_question= str(self.question_pool[random_num])
         self.element = self.element_names[random_element]
         self.display_element.set(self.element)
-        self.element_label.configure(text = self.display_element.get())
+        self.element_label.configure(text = self.display_element.get(), bg = 'medium purple')
         #self.element_names[random_element]
         self.update()
 
@@ -116,6 +120,12 @@ class Application(tk.Frame):
         self.quest_text.set(self.current_question)
         self.label.configure(text = self.current_question)
     #Validatest the user input and outputs true so that th %p can be validated.
+    def outputAnswer(self):
+        if self.displayed == False:
+            self.displayed = True 
+            self.score -= 1
+        self.score_label.configure(text='Score ' + str(self.score))
+        self.element_label.configure(text=self.element+': '+ self.current_answer, bg='tomato')
     def validate(self, new_input):
         if not new_input: # the field is being cleared
             self.user_answer = ''
@@ -140,9 +150,15 @@ class Application(tk.Frame):
             self.display_element.set(self.element)
             self.score += 1
             self.score_label.configure(text='Score ' + str(self.score))
+            self.correct = 'Correct'
+            self.correct_label.configure(text=self.correct, bg = 'PaleGreen1')
             return True
         else:# self.user_answer.lower() !='md':# self.current_answer:
             print("false")
+            self.score -= .5
+            self.score_label.configure(text='Score ' + str(self.score))
+            self.correct = 'Incorrect'
+            self.correct_label.configure(text=self.correct, bg = 'tomato')
             return False
 
 
@@ -156,8 +172,8 @@ class Application(tk.Frame):
 root.configure(background = 'ghost white')
 #configures size of the window and initiates the running of the UI along with the title of the window
 app = Application(root)
-#app.master.geometry("600x600")
-app.master.title('Periodic_flash_cards')
+#app.master.geometry('700x300')
+app.master.title('PTL')
 app.mainloop()
 
 
