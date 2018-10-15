@@ -54,11 +54,13 @@ class Application(tk.Frame):
                     "Mendelevium", "Nobelium", "Lawrencium", "Rutherfordium", "Dubnium", "Seaborgium",
                     "Bohrium", "Hassium", "Meitnerium", "Darmstadtium", "Roentgenium", "Copernicium",
                     "Nihonium", "Flerovium", "Moscovium", "Livermorium", "Tennessine", "Organesson"]
-        self.element_charge = ['']
-
         self.atomic_number = []
         for i in range(1, 119):
             self.atomic_number.append(i)
+        self.element_charge = ['']
+        self.cp_atomic_symbol = self.atomic_symbol
+        self.cp_atomic_number = self.atomic_number
+        self.cp_atomic_mass =self.atomic_mass
         self.displayed = False
         self.score = 0
         self.display_element = tk.StringVar(master)
@@ -85,12 +87,13 @@ class Application(tk.Frame):
         self.score_label = tk.Label(master, text = 'Score: ' + str(self.score), bg='PaleGreen1')
         self.label = tk.Label(master, text= self.atomic_number_question, bg = 'ghost white')
 #-----------------------------------------Buttons & Entry-------------------------------------------
-        self.answer_button = tk.Button(master, text='Answer', command=self.checkAnswer, relief= 'flat', bg = "gray38")
+        self.answer_button = tk.Button(master, text='Answer',  relief= 'flat', bg = "gray38", command= self.combine_func(self.delete_entry, self.checkAnswer))
         self.idk_button = tk.Button(master, text = 'Give up', command=self.outputAnswer, relief='flat', bg = "gray38")
         self.user_input = tk.Entry(master, validate="key", validatecommand=(vcmd, '%P'))
+        self.skip_button = tk.Button(master, text = 'Skip', command=self.skipQuestion, relief = 'flat', bg = "gray38")
 #--------------------------------------------layout----------------------------------------------
         self.grid(sticky=tk.E)
-        self.idk_button.grid(row=2, column=3, padx = 5)
+        self.idk_button.grid(row=2, column=4, padx = 5)
         self.element_label.grid(row=1, column =2, pady = 30)
         self.element_label.configure(font=("Verdana", 30))
         self.label.grid(row=2, column=0, sticky=tk.W)
@@ -98,11 +101,18 @@ class Application(tk.Frame):
         self.score_label.grid(row=0, column=0)#, sticky=tk.E+tk.N)#, sticky=tk.S+tk.W)
         self.user_input.anchor()
         self.label.configure(text= self.atomic_number_question)
-        self.answer_button.grid(row=2, column=4)
+        self.answer_button.grid(row=2, column=5)
         self.correct_label.grid(row=1, column=0)
+        self.skip_button.grid(row=2, column=3, padx=5)
 #---------------------------------------------Setup------------------------------------------------
         self.qAGen()
 #---------------------------------------------Functions-------------------------------------------
+    def combine_func(self, *funcs):
+        def combined_func(*args, **kwargs):
+            for f in funcs:
+                f(*args, **kwargs)
+        return combined_func
+
     def qAGen(self):
         # generates random "element", but actually the element's index, so (<atomicNumber> - 1)
         random_element = random.randrange(118)
@@ -115,8 +125,10 @@ class Application(tk.Frame):
         self.element_label.configure(text = self.display_element.get(), bg = 'medium purple')
         #self.element_names[random_element]
         self.update()
-
-
+    def delete_entry(self):
+        self.user_input.delete(0, 'end')
+    def skipQuestion(self):
+        self.qAGen()
     def update(self):
         self.quest_text.set(self.current_question)
         self.label.configure(text = self.current_question)
@@ -143,7 +155,7 @@ class Application(tk.Frame):
     def checkAnswer(self):
         # just checks if the user's answer is the same as the actual answer (currentAnswer =? user_answer)\
         print(self.current_answer)
-        if self.user_answer.lower() == self.current_answer.lower():
+        if self.user_answer.lower() == self.current_answer.lower() and self.displayed == False:
             print("true")
             #generates next question and answer for element
             self.qAGen()
@@ -154,6 +166,13 @@ class Application(tk.Frame):
             self.correct = 'Correct'
             self.correct_label.configure(text=self.correct, bg = 'PaleGreen1')
             return True
+        elif self.user_answer.lower() == self.current_answer.lower():
+            self.qAGen()
+            self.quest_text.set(self.current_question)
+            self.display_element.set(self.element)
+            self.score_label.configure(text='Score ' + str(self.score))
+            self.correct = 'Correct'
+            self.correct_label.configure(text=self.correct, bg = 'PaleGreen1')
         else:# self.user_answer.lower() !='md':# self.current_answer:
             print("false")
             self.score -= .5
