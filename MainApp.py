@@ -87,7 +87,7 @@ class Application(tk.Frame):
         self.score_label = tk.Label(master, text = 'Score: ' + str(self.score), bg='PaleGreen1')
         self.label = tk.Label(master, text= self.atomic_number_question, bg = 'ghost white')
 #-----------------------------------------Buttons & Entry-------------------------------------------
-        self.answer_button = tk.Button(master, text='Answer',  relief= 'flat', bg = "gray38", command= self.combine_func(self.delete_entry, self.checkAnswer))
+        self.answer_button = tk.Button(master, text='Answer',  relief= 'flat', bg = "gray38", command= self.combine_func(self.checkAnswer, self.delete_entry))
         self.idk_button = tk.Button(master, text = 'Give up', command=self.outputAnswer, relief='flat', bg = "gray38")
         self.user_input = tk.Entry(master, validate="key", validatecommand=(vcmd, '%P'))
         self.skip_button = tk.Button(master, text = 'Skip', command=self.skipQuestion, relief = 'flat', bg = "gray38")
@@ -114,7 +114,8 @@ class Application(tk.Frame):
         return combined_func
 
     def qAGen(self):
-        # generates random "element", but actually the element's index, so (<atomicNumber> - 1)
+        # generates random "element", but actually the element's index, so (<atomicNumber> - 1)\
+        self.displayed = False
         random_element = random.randrange(118)
         random_num = random.randrange(3)
         # generates the question using the random_element index within one of the question pools
@@ -166,14 +167,15 @@ class Application(tk.Frame):
             self.correct = 'Correct'
             self.correct_label.configure(text=self.correct, bg = 'PaleGreen1')
             return True
-        elif self.user_answer.lower() == self.current_answer.lower():
+        elif self.user_answer.lower() == self.current_answer.lower() and self.displayed == True:
             self.qAGen()
             self.quest_text.set(self.current_question)
             self.display_element.set(self.element)
             self.score_label.configure(text='Score ' + str(self.score))
             self.correct = 'Correct'
             self.correct_label.configure(text=self.correct, bg = 'PaleGreen1')
-        else:# self.user_answer.lower() !='md':# self.current_answer:
+            return True
+        elif self.user_answer.lower() != self.current_answer.lower():# self.user_answer.lower() !='md':# self.current_answer:
             print("false")
             self.score -= .5
             self.score_label.configure(text='Score ' + str(self.score))
