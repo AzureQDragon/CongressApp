@@ -107,7 +107,7 @@ class Application(tk.Frame):
         self.label.grid(row=2, column=0, sticky=tk.W)
         self.user_input.grid(row=2, column=2)
         self.score_label.grid(row=0, column=0)#, sticky=tk.E+tk.N)#, sticky=tk.S+tk.W)
-        self.user_input.anchor()
+        #self.user_input.anchor()
         self.label.configure(text= self.atomic_number_question)
         self.answer_button.grid(row=2, column=5)
         self.correct_label.grid(row=1, column=0)
